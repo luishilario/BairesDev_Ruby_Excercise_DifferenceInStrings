@@ -1,20 +1,13 @@
-class DifferenceInStrings
+module DifferenceInStrings
 
-    def self.reverse? (first, second)
-        first.reverse.eql? second
+    def distance_to(second)
+        return [self.length, second.length].max if [self.length, second.length].min == 0
+
+        return levenshtein(first: self, second: second) unless block_given?
+        yield self,second
     end
 
-    def calculate_steps_to_reverse
-    end
-
-    def self.distance_to(first:, second:)
-        return [first.length, second.length].max if [first.length, second.length].min == 0
-
-        return levenshtein(first: first, second: second) unless block_given?
-        yield first,second
-    end
-
-    def self.levenshtein(first:, second:)
+    def levenshtein(first:, second:)
 
         matrix = [(0..first.length).to_a]
 
@@ -38,7 +31,7 @@ class DifferenceInStrings
         return matrix.last.last
     end
 
-    def self.print_matrix matrix
+    def print_matrix matrix
         matrix.each do |x|
             puts x.to_s
         end
@@ -47,5 +40,8 @@ class DifferenceInStrings
     end
 end
 
-puts DifferenceInStrings.distance_to(first: "HYUNDAI",second: "HONDA") 
+class String 
+    include DifferenceInStrings #Monkey Patch
+end
+puts "HYUNDAI".distance_to("HONDA")
 #{ |first, second| [first.length, second.length].max} #example of bloc code
