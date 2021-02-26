@@ -8,11 +8,9 @@ class DifferenceInStrings
     end
 
     def self.distance_to(first:, second:)
-        return 0 if first.downcase!.eql? second.downcase!
-        return first.length if second.empty?
-        return second.length if first.empty?
-        return self.levenshtein(first: first, second: second) unless block_given?
-        puts "Continues to yield"
+        return [first.length, second.length].max if [first.length, second.length].min == 0
+
+        return levenshtein(first: first, second: second) unless block_given?
         yield first,second
     end
 
@@ -36,15 +34,18 @@ class DifferenceInStrings
                 end
             end
         end
+        print_matrix matrix
+        return matrix.last.last
+    end
+
+    def self.print_matrix matrix
         matrix.each do |x|
             puts x.to_s
         end
-        puts "..............................."
-        return matrix.last.last
+        30.times { print "-" }
+        puts
     end
 end
 
-# puts DifferenceInStrings.distance_to(first: "HYUNDAI",second: "HONDA") { |first, second| [first.length, second.length].max}
-puts DifferenceInStrings.distance_to(first: "HYUNDAI",second: "HONDA")  do |first, second|
-    [first.length, second.length].max
-end 
+puts DifferenceInStrings.distance_to(first: "HYUNDAI",second: "HONDA") 
+#{ |first, second| [first.length, second.length].max} #example of bloc code
