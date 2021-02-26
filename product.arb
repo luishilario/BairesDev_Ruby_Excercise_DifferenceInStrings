@@ -1,0 +1,157 @@
+#A store sells two types of products: books and games. Each product has the fields name (string) and price (float). 
+#    Games have a special field to define which platform the game runs on: PS4, XBox or PC. 
+#    Books have a special field to define the category of the book: adventure, romance, scifi, horror. 
+#Define the following functionalities:
+#Product has the following methods:
+#A method to print the information of each product (type, name, price and either platform – if product is a game – or category – if product is a book)
+#A method that, given a discount value (a float ranging from 0.0 to 1.0), will return a new price value with the discount applied. 
+#The store should be able to apply custom discounts based on the type of product: 10% discount for books and 20% discount for games.
+
+# require 'logging_module'
+require 'logger'
+module LoggingModule
+
+    def self.logger
+        @@logger ||= Logger.new(STDOUT)
+    end
+        
+    def self.logger_level=(level)
+        ::LoggingModule.logger.level = level
+    end
+
+    def method_missing(method_name, *args, &block)
+        array = %w[info debug error fatal warn]
+        super(method_name, *args, &block) unless array.include? method_name.to_s
+        ::LoggingModule.logger.send(method_name.to_sym, args)
+        
+    end
+end
+
+class Product
+    include LoggingModule
+    
+    attr_reader :name, :price
+    
+    def initialize(**args)
+        self.name = args[:name]
+        self.price = args[:price]
+    end
+    
+    def name=(val)
+        raise ArgumentError.new("All products must have a name.") if val.nil? || val.empty?
+        @name = val
+        info("Sets name of product to #{val}")
+    rescue => e
+        error(e.message)
+
+    end
+    
+    def price=(val)
+        raise ArgumentError.new("All products must have a price.") if val.nil? || val.zero?
+        @price = val
+        info("Sets price of product to #{val}")
+    rescue => e
+        error(e.message)
+    end
+    
+    def information
+        print "Product: #{name}\nType: #{type}\nPrice: #{price}\n"
+    end
+    
+    def discount **args
+        raise ArgumentError.new('A discount must be given.') if args[:discount].nil?
+        raise ArgumentError.new('The discount must be a number.') unless args[:discount].is_a? Numeric 
+        raise ArgumentError.new('The discount number must be between 1 and 0.') unless (0..1).member?(args[:discount]) 
+        price_with_discount = price - args[:discount].to_f * price
+        puts price_with_discount
+        info("The #{type.downcase} has a discount of #{price_with_discount}")
+    rescue StandardError => e
+        error(e.message)
+    end
+    
+    def store_discount product_discount
+        discount_to_appy = product_discount/100.00*price
+        puts "New price with store discount of #{product_discount}%: #{price - discount_to_appy}"
+    end
+    
+    def type
+    end
+end
+
+class Book < Product
+    attr_accessor :category
+    
+    DISCOUNT = 10
+    
+    TYPE = "Book"
+    
+    def initialize(**args)
+        super(args)
+        self.category = args[:category]
+    end
+    
+    def category=(val)
+        raise ArgumentError.new("All books must have a category.") if val.nil? || val.empty?
+        @category = val
+        info("Sets category of book to #{val}")
+    rescue => e
+        error(e.message)
+    end
+    
+    def information
+        puts "#{super}Category: #{category}"
+    end
+    
+    def store_discount
+        super(DISCOUNT)
+    end
+    
+    def type
+        TYPE
+    end
+end
+
+class Game < Product
+    attr_reader :platform
+    
+    DISCOUNT = 20
+    
+    TYPE = "Game"
+    
+    def initialize(**args)
+        super(args)
+        self.platform = args[:platform]
+    end
+    
+    def platform=(val)
+        raise ArgumentError.new("All games must have a platform to run.") if val.nil? || val.empty?
+        @platform = val
+        info("Sets platform of game to #{val}")
+    rescue => e
+        error(e.message)
+    end
+    
+    def information
+        puts "#{super}Platform: #{platform}"
+    end
+    
+    def store_discount
+        super(DISCOUNT)
+    end
+    
+    def type
+        TYPE
+    end
+end
+LoggingModule.logger_level = "DEBUG"
+game = Game.new(name: "", price: 50, platform: "PC")
+# game.name= ""
+game.information
+game.store_discount
+
+book = Book.new(name: "Lord of the Rings", price: 30, category: "Epic Fantasy")
+book.information
+book.store_discount
+25.times{print "-"}
+puts
+book.discount(discount: 0.5)
