@@ -1,5 +1,4 @@
-module Levenshtein
-
+module Similarity
     def distance_to(second)
         return [self.length, second.length].max if [self.length, second.length].min == 0
 
