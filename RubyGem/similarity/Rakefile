@@ -1,6 +1,32 @@
 require "bundler/gem_tasks"
 require "rspec/core/rake_task"
+require 'similarity'
 
 RSpec::Core::RakeTask.new(:spec)
 
 task :default => :spec
+
+desc "Calculates distance between words in a text file and adds result to file"
+task :calculate_distance  do
+    class String include Similarity end
+    file_path = "rake_file.txt"
+    lines = file_lines file_path
+    new_lines = add_distance_to_line lines
+    write_lines_to_file(file_path: file_path, lines: new_lines)
+end
+
+def file_lines file_path
+    File.read(file_path).split
+end
+
+def add_distance_to_line lines
+    lines.each do |line|
+        words = line.split(',')
+        distance = words[0].distance_to words[1]
+        line.replace "#{words[0]},#{words[1]} = #{distance}"
+    end
+end
+
+def write_lines_to_file(file_path:, lines:)
+    File.write(file_path, lines.join("\n"), mode: "w")
+end
