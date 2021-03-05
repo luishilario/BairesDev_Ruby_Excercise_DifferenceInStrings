@@ -1,0 +1,9 @@
+<h1><%= @book.name %></h1>
+<p><%= @book.description %></p>
+<p><%= @book.price %></p>
+
+
+<ul>
+  <li><%= link_to "Edit", edit_book_path(@book) %></li>
+  <li><%= link_to "Destroy", book_path(@book), method: :delete, data: { confirm: "Are you sure?" } %></li>
+</ul>

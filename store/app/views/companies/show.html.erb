@@ -1,0 +1,6 @@
+<h1><%= @company.name %></h1>
+
+<ul>
+  <li><%= link_to "Edit", edit_company_path(@company) %></li>
+  <li><%= link_to "Destroy", company_path(@company), method: :delete, data: { confirm: "Are you sure?" } %></li>
+</ul>

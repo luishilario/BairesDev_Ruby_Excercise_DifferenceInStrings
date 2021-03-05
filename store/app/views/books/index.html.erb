@@ -1,0 +1,11 @@
+<h1>Books</h1>
+
+<ul>
+  <% @books.each do |book| %>
+    <li>
+      <%= link_to book.name, book %> - <%= link_to "Destroy", book_path(book), method: :delete, data: { confirm: "Are you sure?" } %>
+    </li>
+  <% end %>
+</ul>
+
+<%= link_to "New Book", new_book_path %>

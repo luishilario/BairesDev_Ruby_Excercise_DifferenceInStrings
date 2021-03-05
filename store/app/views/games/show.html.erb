@@ -1,0 +1,9 @@
+<h1><%= @game.name %></h1>
+<p><%= @game.description %></p>
+<p><%= @game.price %></p>
+
+
+<ul>
+  <li><%= link_to "Edit", edit_game_path(@game) %></li>
+  <li><%= link_to "Destroy", game_path(@game), method: :delete, data: { confirm: "Are you sure?" } %></li>
+</ul>
