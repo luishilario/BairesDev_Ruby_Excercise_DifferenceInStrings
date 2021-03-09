@@ -1,4 +1,4 @@
-class CompaniesController < ApplicationController
+class V1::CompaniesController < ApplicationController
     def index
         @companies = Company.all
         render json: @companies
@@ -6,16 +6,18 @@ class CompaniesController < ApplicationController
     
     def show
         @company = Company.find(params[:id])
+        render status: :ok
     end
         
     def create
-        @company = Company.new(company_params)
-        
-        if @company.save
-            render json: @company
-        else
-            render json: {error: "Could not create company"}
-        end
+        # @company = Company.new(company_params)
+        @company = Company.create!(company_params)
+        render json: @company, status: :created
+        # if @company.save
+        #     render json: @company, status: :created
+        # else
+        #     render json: {error: "Could not create company"}
+        # end
     end
     
     def update

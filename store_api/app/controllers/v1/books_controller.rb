@@ -1,4 +1,4 @@
-class BooksController < ApplicationController
+class V1::BooksController < ApplicationController
     def index
         @books = Book.all
         render json: @books
