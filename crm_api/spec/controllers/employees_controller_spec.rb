@@ -57,7 +57,7 @@ describe "Employee GET #index", :type => :request do
     let!(:employees) {create_list(:employee, 20)}
     before {get '/employees', as: :json}
     it 'returns all employees' do
-        expect(json.size).to eq(20)
+        expect(json['employees'].size).to eq(20)
     end
     it 'returns status code 200' do
         expect(response).to have_http_status(:ok)

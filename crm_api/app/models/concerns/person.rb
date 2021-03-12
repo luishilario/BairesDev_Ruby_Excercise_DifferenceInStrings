@@ -7,6 +7,6 @@ module Person
     end
     
     def new_person_mail
-        PersonMailer.with(person: self).notify_new.deliver_now
+        PersonMailer.notify_new(self).deliver_now
     end
 end

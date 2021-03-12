@@ -1,7 +1,7 @@
 class ClientsController < ApplicationController
     def index
-        @clients = Client.page params[:page] if params[:page]
-        @clients = Client.all.except(:limit, :offset) unless params[:page]
+        @clients = Client.page(params[:page] || 1).per(per)
+        # @clients = Client.all.except(:limit, :offset) unless params[:page]
         render status: :ok
     end
     
@@ -33,5 +33,10 @@ class ClientsController < ApplicationController
     private
     def client_params
         params.require(:client).permit(:name, :birthdate, :project, :country, :role)
+    end
+
+    def per
+        return Client.count if params[:per] == -1
+        params[:per] || 25
     end
 end

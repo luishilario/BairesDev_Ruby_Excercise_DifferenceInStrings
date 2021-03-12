@@ -9,6 +9,8 @@ RSpec.describe Client, :type => :model do
     expect(subject).to be_valid
   end
 
+  it {is_expected.to validate_presence_of(:name)}
+
   it "is not valid without a name" do
     subject.name = nil
     expect(subject).to_not be_valid
@@ -32,5 +34,10 @@ RSpec.describe Client, :type => :model do
   it "is not valid without a role" do
     subject.role = nil
     expect(subject).to_not be_valid
+  end
+
+  describe "notify_new" do
+    subject { create(:client) }
+    it {expect { subject }.to change { ActionMailer::Base.deliveries.count }.by(1) }
   end
 end
